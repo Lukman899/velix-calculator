@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VELIX CALCULATOR</title>
-
     <link rel="stylesheet" href="output.css">
 
     <style>
@@ -34,8 +33,6 @@
             color: var(--text);
             font-family: 'Inter', sans-serif;
         }
-
-        /* HEADER */
 
         header {
             width: 100%;
@@ -67,8 +64,6 @@
             color: var(--muted);
             letter-spacing: 1px;
         }
-
-        /* MAIN */
 
         main {
             width: 100%;
@@ -110,8 +105,6 @@
             margin-bottom: 0;
         }
 
-        /* CALCULATOR */
-
         .calculator {
             width: 100%;
             max-width: 380px;
@@ -140,8 +133,6 @@
             font-weight: 600;
             color: var(--muted);
         }
-
-        /* DISPLAY */
 
         .display-container {
             margin-bottom: 25px;
@@ -173,8 +164,6 @@
             border-color: var(--accent);
         }
 
-        /* BUTTON GRID */
-
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -204,8 +193,6 @@
             transform: scale(0.94);
         }
 
-        /* FUNCTION BUTTONS */
-
         .buttons .function {
             background-color: #444444;
             color: #ffffff;
@@ -217,8 +204,6 @@
             background-color: #555555;
         }
 
-        /* OPERATOR BUTTONS */
-
         .buttons .operator {
             background-color: #842522;
             border-color: #a42c29;
@@ -229,8 +214,6 @@
         .buttons .operator:hover {
             background-color: var(--accent);
         }
-
-        /* EQUAL BUTTON */
 
         .buttons .equal {
             background-color: var(--accent);
@@ -249,8 +232,6 @@
             outline-offset: 3px;
         }
 
-        /* FOOTER */
-
         footer {
             text-align: center;
             padding: 25px 15px;
@@ -258,8 +239,6 @@
             color: var(--muted);
             font-size: 12px;
         }
-
-        /* RESPONSIVE */
 
         @media (max-width: 480px) {
             .navbar {
@@ -306,12 +285,9 @@
             }
         }
     </style>
-
 </head>
 
 <body>
-
-
     <header>
         <div class="navbar">
             <div class="logo">VELIX<span>.</span></div>
@@ -319,30 +295,20 @@
         </div>
     </header>
 
-
-
     <main>
-
         <div class="page-heading">
             <p>JAVASCRIPT PROJECT</p>
-
-            <h1>
-                VELIX <span>CALCULATOR.</span>
-            </h1>
-
+            <h1>VELIX <span>CALCULATOR.</span></h1>
             <p class="description">
                 Simple. Clean. Functional.
             </p>
         </div>
 
-
         <section class="calculator">
-
             <div class="calculator-top">
                 <span class="calculator-name">VELIX CALC</span>
                 <span class="calculator-model">STANDARD</span>
             </div>
-
 
             <div class="display-container">
                 <input
@@ -353,9 +319,7 @@
                 >
             </div>
 
-
             <div class="buttons">
-
                 <button class="function">AC</button>
                 <button class="function">%</button>
                 <button class="function">DEL</button>
@@ -380,19 +344,15 @@
                 <button>0</button>
                 <button>.</button>
                 <button class="equal">=</button>
-
             </div>
-
         </section>
-
     </main>
-
 
     <footer>
         <p>&copy; 2026 Velix Calculator. Designed & Developed by Lukman.</p>
     </footer>
 
     <script src="index.js"></script>
-
 </body>
+
 </html>

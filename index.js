@@ -1,98 +1,117 @@
-const display = document.querySelector('input[type="text"]');
-const buttons = document.querySelectorAll("button");
 
-let currentInput = "0";
-let previousInput = "";
-let operator = "";
-let resultDisplayed = false;
+const display = document.querySelector(".display-container input");
+const buttons = document.querySelectorAll(".buttons button");
 
+let expression = "";
+let resultShown = false;
 
-buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-        const value = button.innerText;
-        // console.log(value);
-
-
-        if (!isNaN(value) || value === ".") {
-
-            if (resultDisplayed) {
-                currentInput = value;
-                resultDisplayed = false;
-            } else {
-                currentInput = currentInput === "0"
-                    ? value
-                    : currentInput + value;
-            }
-
-            updateDisplay(currentInput);
-            return;
-        }
-        if (value === "AC") {
-            currentInput = "0";
-            previousInput = "";
-            operator = "";
-            resultDisplayed = false;
-            updateDisplay("0");
-            return;
-        }
-
-        if (value === 'DEL') {
-            currentInput = currentInput.slice(0, -1) || "0";
-            updateDisplay(currentInput);
-            return;
-        }
-
-        if (["/", "*", "-", "+", "%"].includes(value)) {
-
-            if (resultDisplayed) {
-                previousInput = display.value;
-                resultDisplayed = false;
-            } else {
-                if (currentInput) {
-                    previousInput = previousInput ? calculate().toString() : currentInput;
-                }
-            }
-
-            currentInput = "";
-            operator = value;updateDisplay(previousInput);
-            return;
-        }
-
-        if (value === "=") {
-            if (currentInput && previousInput && operator) {
-                const result = calculate();
-                updateDisplay(result);
-                previousInput = result.toString();
-                currentInput = "";
-                operator = "";
-                resultDisplayed = true;
-            }
-            return;
-        }
-    });
-});
-function updateDisplay(value) {
-    display.value = value;
+function updateDisplay() {
+    display.value = expression;
 }
 
 function calculate() {
-    const prev = parseFloat(previousInput);
-    const current = parseFloat(currentInput);
+    if (!expression || expression === "Error") return;
 
-    if (isNaN(prev) || isNaN(current)) {
-        return 0;
-    }
-    switch (operator) {
-        case "+":
-            return prev + current;
-        case "-":
-            return prev - current;
-        case "/":
-            return prev / current;
-        case "*":
-            return prev * current;
+    try {
+        let exp = expression.replace(/−/g, "-");
 
-        default:
-            return current;
+        if (!/^[0-9+\-*/.%\s]+$/.test(exp)) {
+            throw new Error("Invalid expression");
+        }
+
+        exp = exp.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+
+        if (/[^0-9.)]$/.test(exp)) return;
+
+        const result = Function(`"use strict"; return (${exp})`)();
+
+        if (!Number.isFinite(result)) {
+            throw new Error("Invalid result");
+        }
+
+        expression = String(Number(result.toPrecision(12)));
+        resultShown = true;
+    } catch {
+        expression = "Error";
+        resultShown = true;
     }
+
+    updateDisplay();
 }
+
+function handleInput(value) {
+    if (value === "AC") {
+        expression = "";
+        resultShown = false;
+    } else if (value === "DEL") {
+        expression = resultShown ? "" : expression.slice(0, -1);
+        resultShown = false;
+    } else if (value === "=") {
+        calculate();
+        return;
+    } else {
+        if (expression === "Error") {
+            expression = "";
+        }
+
+        if (resultShown) {
+            if (!["+", "−", "*", "/", "%"].includes(value)) {
+                expression = "";
+            }
+            resultShown = false;
+        }
+
+        if (["+", "−", "*", "/"].includes(value)) {
+            if (!expression) {
+                if (value !== "−") return;
+            } else if (/[+−*/.]$/.test(expression)) {
+                expression = expression.slice(0, -1);
+            }
+        }
+
+        if (value === ".") {
+            const currentNumber = expression.split(/[+−*/]/).pop();
+
+            if (currentNumber.includes(".")) return;
+            if (!currentNumber) value = "0.";
+        }
+
+        if (value === "%") {
+            if (!/\d$/.test(expression)) return;
+        }
+
+        expression += value;
+    }
+
+    updateDisplay();
+}
+
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        handleInput(button.textContent.trim());
+    });
+});
+
+document.addEventListener("keydown", event => {
+    if (event.ctrlKey || event.altKey || event.metaKey) return;
+
+    const key = event.key;
+    let value;
+
+    if (/^[0-9]$/.test(key)) {
+        value = key;
+    } else if (["+", "-", "*", "/", ".", "%"].includes(key)) {
+        value = key === "-" ? "−" : key;
+    } else if (key === "Enter" || key === "=") {
+        value = "=";
+    } else if (key === "Backspace") {
+        value = "DEL";
+    } else if (key === "Escape" || key === "Delete") {
+        value = "AC";
+    } else {
+        return;
+    }
+
+    event.preventDefault();
+    handleInput(value);
+});
